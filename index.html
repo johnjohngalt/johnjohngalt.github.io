@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John's Blog</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #fff;
+            background: #0a0a0f;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 动态光晕背景 */
+        .bg-dynamic { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: -1; 
+            overflow: hidden; 
+            pointer-events: none; 
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+        
+        .bg-dynamic.active {
+            opacity: 1;
+        }
+        
+        .bg-orb { 
+            position: absolute; 
+            border-radius: 50%; 
+            filter: blur(80px); 
+            opacity: 0; 
+            transition: none; 
+        }
+        
+        /* 紫色光晕 - 紧跟鼠标 */
+        .bg-orb-1 { 
+            width: 600px; 
+            height: 600px; 
+            background: radial-gradient(circle, rgba(99,102,241,0.8) 0%, transparent 70%); 
+            left: calc(var(--mouse-x) - 300px); 
+            top: calc(var(--mouse-y) - 300px); 
+        }
+        
+        /* 绿色光晕 - 偏移跟随 */
+        .bg-orb-2 { 
+            width: 500px; 
+            height: 500px; 
+            background: radial-gradient(circle, rgba(16,185,129,0.6) 0%, transparent 70%); 
+            left: calc(var(--mouse-x) * 1.5 - 250px); 
+            top: calc(var(--mouse-y) * 1.5 - 250px); 
+        }
+        
+        /* 粉色光晕 - 偏移跟随 */
+        .bg-orb-3 { 
+            width: 400px; 
+            height: 400px; 
+            background: radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%); 
+            left: calc(var(--mouse-x) * 0.8 - 200px); 
+            top: calc(var(--mouse-y) * 0.8 - 200px); 
+        }
+        
+        /* 加载动画 */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 1.5s ease;
+        }
+        
+        .preloader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 紫色小点 */
+        .preloader-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 0%, #a855f7 40%, #6366f1 70%, transparent 100%);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 40px rgba(99, 102, 241, 0.5);
+            animation: dotFade 2s ease-out forwards;
+        }
+        
+        @keyframes dotFade {
+            0% {
+                opacity: 1;
+                filter: blur(0);
+            }
+            40% {
+                opacity: 0.8;
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 0;
+                filter: blur(8px);
+            }
+        }
+        
+        /* 光晕 */
+        .preloader-halo {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0;
+        }
+        
+        .preloader-halo-1 {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(99,102,241,0.5) 0%, rgba(168,85,247,0.2) 50%, transparent 80%);
+            animation: haloBloom 2.2s ease-out forwards;
+        }
+        
+        .preloader-halo-2 {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(16,185,129,0.4) 0%, rgba(16,185,129,0.15) 50%, transparent 80%);
+            animation: haloBloom 2.2s ease-out 0.1s forwards;
+        }
+        
+        .preloader-halo-3 {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(168,85,247,0.35) 0%, rgba(99,102,241,0.15) 50%, transparent 80%);
+            animation: haloBloom 2.2s ease-out 0.2s forwards;
+        }
+        
+        @keyframes haloBloom {
+            0% {
+                width: 20px;
+                height: 20px;
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.45;
+            }
+            60% {
+                opacity: 0.35;
+            }
+            100% {
+                width: 700px;
+                height: 700px;
+                opacity: 0;
+            }
+        }
+        
+        /* 主内容 */
+        .main-content {
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .main-content.visible {
+            opacity: 1;
+        }
+        
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 60px 20px; 
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 0;
+        }
+        
+        header h1 { 
+            font-size: 3rem; 
+            margin-bottom: 15px; 
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6ee7b7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: titleIn 0.8s ease 1.8s forwards;
+        }
+        
+        @keyframes titleIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        header p { 
+            opacity: 0; 
+            font-size: 1.2rem; 
+            color: #94a3b8;
+            animation: fadeIn 0.6s ease 2s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 0.85; }
+        }
+        
+        .posts { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 24px; 
+        }
+        
+        .post {
+            background: rgba(26, 26, 36, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .post.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .post:hover { 
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .post h2 { 
+            color: #fff; 
+            margin-bottom: 12px; 
+            font-size: 1.5rem; 
+        }
+        
+        .post .date { 
+            color: #6366f1; 
+            font-size: 0.9rem; 
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .post p { 
+            color: #94a3b8; 
+            line-height: 1.8;
+        }
+        
+        .post a { 
+            display: inline-block;
+            margin-top: 20px;
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .post a:hover { 
+            color: #818cf8; 
+        }
+        
+        footer {
+            text-align: center;
+            color: #64748b;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        footer.visible {
+            opacity: 1;
+        }
+        
+        footer a { 
+            color: #6366f1; 
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            color: #818cf8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-dot"></div>
+        <div class="preloader-halo preloader-halo-1"></div>
+        <div class="preloader-halo preloader-halo-2"></div>
+        <div class="preloader-halo preloader-halo-3"></div>
+    </div>
+    
+    <!-- 动态光晕背景 -->
+    <div class="bg-dynamic" id="bgDynamic">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+    </div>
+    
+    <!-- 主内容 -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <header>
+                <h1>John's Blog</h1>
+                <p>探索技术，记录生活</p>
+            </header>
+            
+            <div class="posts">
+                <article class="post" style="transition-delay: 0.1s;">
+                    <h2>欢迎来到我的博客</h2>
+                    <div class="date">2026-03-10</div>
+                    <p>这是我的第一个 GitHub Pages 博客。我会在这里分享技术文章、项目记录和生活点滴。这是一个带有动态光晕效果的炫酷界面，光晕会跟随鼠标移动。</p>
+                    <a href="#">阅读全文 →</a>
+                </article>
+                
+                <article class="post" style="transition-delay: 0.2s;">
+                    <h2>关于我</h2>
+                    <div class="date">2026-03-10</div>
+                    <p>开发者，热爱开源技术，喜欢折腾各种开发板和有趣的项目。目前在玩 RDK X5 开发板，搭建了自己的主页和新闻聚合网站。</p>
+                    <a href="#">阅读全文 →</a>
+                </article>
+                
+                <article class="post" style="transition-delay: 0.3s;">
+                    <h2>我的项目</h2>
+                    <div class="date">2026-03-10</div>
+                    <p>• 新闻聚合网站 - 聚合 VRAR星球、36氪等科技资讯<br>
+                    • 日程管理网站 - 带有炫酷时钟和任务管理<br>
+                    • GitHub Pages 博客 - 你现在看到的这个网站</p>
+                    <a href="#">阅读全文 →</a>
+                </article>
+            </div>
+            
+            <footer>
+                <p>© 2026 John. Powered by <a href="https://pages.github.com">GitHub Pages</a></p>
+            </footer>
+        </div>
+    </div>
+    
+    <script>
+        setTimeout(function() {
+            document.getElementById('preloader').classList.add('fade-out');
+            
+            var bgDynamic = document.getElementById('bgDynamic');
+            bgDynamic.classList.add('active');
+            
+            var orbs = bgDynamic.querySelectorAll('.bg-orb');
+            orbs[0].style.opacity = '0.4';
+            orbs[1].style.opacity = '0.35';
+            orbs[2].style.opacity = '0.25';
+            
+            document.getElementById('mainContent').classList.add('visible');
+            
+            document.querySelectorAll('.post').forEach(function(post, i) {
+                setTimeout(function() {
+                    post.classList.add('visible');
+                }, 200 + i * 150);
+            });
+            
+            setTimeout(function() {
+                document.querySelector('footer').classList.add('visible');
+            }, 800);
+            
+        }, 2500);
+        
+        // 鼠标跟随光晕效果 - 与原网站一致
+        var mouseX = 50, mouseY = 50;
+        var targetX = 50, targetY = 50;
+        var bgDynamic = document.getElementById('bgDynamic');
+        
+        document.addEventListener('mousemove', function(e) {
+            mouseX = (e.clientX / window.innerWidth) * 100;
+            mouseY = (e.clientY / window.innerHeight) * 100;
+        });
+        
+        function animate() {
+            targetX += (mouseX - targetX) * 0.08;
+            targetY += (mouseY - targetY) * 0.08;
+            
+            bgDynamic.style.setProperty('--mouse-x', targetX + '%');
+            bgDynamic.style.setProperty('--mouse-y', targetY + '%');
+            
+            requestAnimationFrame(animate);
+        }
+        
+        setTimeout(function() {
+            animate();
+        }, 3000);
+        
+        setTimeout(function() {
+            var orbs = bgDynamic.querySelectorAll('.bg-orb');
+            orbs[0].style.transition = 'opacity 1.5s ease';
+            orbs[1].style.transition = 'opacity 1.5s ease';
+            orbs[2].style.transition = 'opacity 1.5s ease';
+            
+            orbs[0].style.opacity = '0.5';
+            orbs[1].style.opacity = '0.4';
+            orbs[2].style.opacity = '0.3';
+        }, 3500);
+    </script>
+</body>
+</html>

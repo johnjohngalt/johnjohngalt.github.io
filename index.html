@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>John's Blog</title>
+    <title>嵌入式/Linux春招岗位</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --mouse-x: 50%;
-            --mouse-y: 50%;
-        }
+        :root { --mouse-x: 50%; --mouse-y: 50%; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             line-height: 1.6;
             color: #fff;
             background: #0a0a0f;
@@ -19,268 +16,65 @@
             overflow-x: hidden;
         }
         
-        /* 动态光晕背景 */
-        .bg-dynamic { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: -1; 
-            overflow: hidden; 
-            pointer-events: none; 
-            opacity: 0;
-            transition: opacity 2s ease;
-        }
-        
+        .bg-dynamic { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 2s ease; }
         .bg-dynamic.active { opacity: 1; }
+        .bg-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0; }
+        .bg-orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(99,102,241,0.8) 0%, transparent 70%); left: calc(var(--mouse-x) - 300px); top: calc(var(--mouse-y) - 300px); }
+        .bg-orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(16,185,129,0.6) 0%, transparent 70%); left: calc(var(--mouse-x) * 1.5 - 250px); top: calc(var(--mouse-y) * 1.5 - 250px); }
+        .bg-orb-3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%); left: calc(var(--mouse-x) * 0.8 - 200px); top: calc(var(--mouse-y) * 0.8 - 200px); }
         
-        .bg-orb { 
-            position: absolute; 
-            border-radius: 50%; 
-            filter: blur(80px); 
-            opacity: 0; 
-            transition: none; 
-        }
+        .preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0f; z-index: 9999; opacity: 1; transition: opacity 1.5s ease; }
+        .preloader.fade-out { opacity: 0; pointer-events: none; }
+        .preloader-dot { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #a855f7 40%, #6366f1 70%, transparent 100%); box-shadow: 0 0 20px rgba(168, 85, 247, 0.8); animation: dotFade 2s ease-out forwards; }
+        @keyframes dotFade { 0% { opacity: 1; filter: blur(0); } 40% { opacity: 0.8; filter: blur(2px); } 100% { opacity: 0; filter: blur(8px); } }
+        .preloader-halo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(60px); opacity: 0; }
+        .preloader-halo-1 { width: 20px; height: 20px; background: radial-gradient(circle, rgba(99,102,241,0.5) 0%, transparent 70%); animation: haloBloom 2.2s ease-out forwards; }
+        .preloader-halo-2 { width: 20px; height: 20px; background: radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%); animation: haloBloom 2.2s ease-out 0.1s forwards; }
+        .preloader-halo-3 { width: 20px; height: 20px; background: radial-gradient(circle, rgba(168,85,247,0.35) 0%, transparent 70%); animation: haloBloom 2.2s ease-out 0.2s forwards; }
+        @keyframes haloBloom { 0% { width: 20px; height: 20px; opacity: 0; } 20% { opacity: 0.45; } 100% { width: 700px; height: 700px; opacity: 0; } }
         
-        .bg-orb-1 { 
-            width: 600px; 
-            height: 600px; 
-            background: radial-gradient(circle, rgba(99,102,241,0.8) 0%, transparent 70%); 
-            left: calc(var(--mouse-x) - 300px); 
-            top: calc(var(--mouse-y) - 300px); 
-        }
-        
-        .bg-orb-2 { 
-            width: 500px; 
-            height: 500px; 
-            background: radial-gradient(circle, rgba(16,185,129,0.6) 0%, transparent 70%); 
-            left: calc(var(--mouse-x) * 1.5 - 250px); 
-            top: calc(var(--mouse-y) * 1.5 - 250px); 
-        }
-        
-        .bg-orb-3 { 
-            width: 400px; 
-            height: 400px; 
-            background: radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%); 
-            left: calc(var(--mouse-x) * 0.8 - 200px); 
-            top: calc(var(--mouse-y) * 0.8 - 200px); 
-        }
-        
-        /* 加载动画 */
-        .preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0f;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 1.5s ease;
-        }
-        
-        .preloader.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .preloader-dot {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #fff 0%, #a855f7 40%, #6366f1 70%, transparent 100%);
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 40px rgba(99, 102, 241, 0.5);
-            animation: dotFade 2s ease-out forwards;
-        }
-        
-        @keyframes dotFade {
-            0% { opacity: 1; filter: blur(0); }
-            40% { opacity: 0.8; filter: blur(2px); }
-            100% { opacity: 0; filter: blur(8px); }
-        }
-        
-        .preloader-halo {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0;
-        }
-        
-        .preloader-halo-1 {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, rgba(99,102,241,0.5) 0%, rgba(168,85,247,0.2) 50%, transparent 80%);
-            animation: haloBloom 2.2s ease-out forwards;
-        }
-        
-        .preloader-halo-2 {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, rgba(16,185,129,0.4) 0%, rgba(16,185,129,0.15) 50%, transparent 80%);
-            animation: haloBloom 2.2s ease-out 0.1s forwards;
-        }
-        
-        .preloader-halo-3 {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, rgba(168,85,247,0.35) 0%, rgba(99,102,241,0.15) 50%, transparent 80%);
-            animation: haloBloom 2.2s ease-out 0.2s forwards;
-        }
-        
-        @keyframes haloBloom {
-            0% { width: 20px; height: 20px; opacity: 0; }
-            20% { opacity: 0.45; }
-            60% { opacity: 0.35; }
-            100% { width: 700px; height: 700px; opacity: 0; }
-        }
-        
-        /* 主内容 */
         .main-content { opacity: 0; transition: opacity 1s ease; }
         .main-content.visible { opacity: 1; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 1; }
         
-        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 1; }
+        .time-card { background: rgba(26, 26, 36, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 24px; margin-bottom: 30px; text-align: center; }
+        .time-display { display: flex; justify-content: center; align-items: baseline; gap: 8px; margin-bottom: 15px; }
+        .clock { font-family: 'SF Mono', monospace; font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6ee7b7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .date-display { font-size: 1rem; color: #94a3b8; margin-bottom: 15px; }
+        .progress-container { margin-top: 15px; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .progress-title { font-size: 0.85rem; color: #94a3b8; }
+        .progress-percent { font-size: 1.1rem; font-weight: 600; background: linear-gradient(135deg, #6366f1, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .progress-bar-bg { height: 8px; background: rgba(255,255,255,0.1); border-radius: 100px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #10b981, #6366f1); background-size: 200% 100%; border-radius: 100px; transition: width 1s linear; animation: shimmer 3s linear infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .remaining-time { font-size: 0.8rem; color: #64748b; margin-top: 8px; }
         
-        /* 时间进度条 */
-        .time-card {
-            background: rgba(26, 26, 36, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 2rem; margin-bottom: 8px; background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6ee7b7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .time-display {
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+        .section-title { font-size: 1.2rem; color: #fff; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         
-        .clock {
-            font-family: 'JetBrains Mono', 'SF Mono', monospace;
-            font-size: 3.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6ee7b7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+        .jobs-grid { display: grid; gap: 16px; }
+        .job-card { background: rgba(26, 26, 36, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 20px; transition: all 0.3s ease; }
+        .job-card:hover { transform: translateY(-3px); border-color: rgba(99, 102, 241, 0.3); }
+        .job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .job-title { font-size: 1.1rem; font-weight: 600; color: #fff; }
+        .job-salary { color: #10b981; font-weight: 600; font-size: 1rem; }
+        .job-company { color: #94a3b8; font-size: 0.95rem; margin-bottom: 8px; }
+        .job-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .job-tag { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 4px 12px; border-radius: 100px; font-size: 0.8rem; }
+        .job-location { color: #64748b; font-size: 0.85rem; margin-top: 8px; }
+        .job-link { display: inline-block; margin-top: 15px; color: #6366f1; text-decoration: none; font-weight: 500; }
+        .job-link:hover { color: #818cf8; }
         
-        .date-display {
-            font-size: 1rem;
-            color: #94a3b8;
-            margin-bottom: 20px;
-        }
+        .empty-hint { text-align: center; color: #64748b; padding: 40px; }
         
-        .progress-container {
-            margin-top: 15px;
-        }
-        
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .progress-title {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-        
-        .progress-percent {
-            font-size: 1.1rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #6366f1, #10b981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .progress-bar-bg {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 100px;
-            overflow: hidden;
-        }
-        
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #6366f1, #10b981, #6366f1);
-            background-size: 200% 100%;
-            border-radius: 100px;
-            transition: width 1s linear;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-            animation: shimmer 3s linear infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        .remaining-time {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 8px;
-        }
-        
-        header { text-align: center; margin-bottom: 40px; padding: 20px 0; }
-        
-        header h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 10px; 
-            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6ee7b7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        header p { font-size: 1.1rem; color: #94a3b8; }
-        
-        .posts { display: flex; flex-direction: column; gap: 20px; }
-        
-        .post {
-            background: rgba(26, 26, 36, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .post.visible { opacity: 1; transform: translateY(0); }
-        .post:hover { transform: translateY(-3px); border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
-        
-        .post h2 { color: #fff; margin-bottom: 10px; font-size: 1.3rem; }
-        .post .date { color: #6366f1; font-size: 0.85rem; margin-bottom: 12px; font-weight: 500; }
-        .post p { color: #94a3b8; line-height: 1.7; }
-        
-        .post a { display: inline-block; margin-top: 15px; color: #6366f1; text-decoration: none; font-weight: 500; }
-        .post a:hover { color: #818cf8; }
-        
-        footer { text-align: center; color: #64748b; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+        footer { text-align: center; color: #64748b; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; }
         footer a { color: #6366f1; text-decoration: none; }
-        footer a:hover { color: #818cf8; }
     </style>
 </head>
 <body>
-    <!-- 加载动画 -->
     <div class="preloader" id="preloader">
         <div class="preloader-dot"></div>
         <div class="preloader-halo preloader-halo-1"></div>
@@ -288,17 +82,14 @@
         <div class="preloader-halo preloader-halo-3"></div>
     </div>
     
-    <!-- 动态光晕背景 -->
     <div class="bg-dynamic" id="bgDynamic">
         <div class="bg-orb bg-orb-1"></div>
         <div class="bg-orb bg-orb-2"></div>
         <div class="bg-orb bg-orb-3"></div>
     </div>
     
-    <!-- 主内容 -->
     <div class="main-content" id="mainContent">
         <div class="container">
-            <!-- 时间进度条 -->
             <div class="time-card">
                 <div class="time-display">
                     <span class="clock" id="clock">00:00:00</span>
@@ -317,84 +108,188 @@
             </div>
             
             <header>
-                <h1>John's Blog</h1>
-                <p>探索技术，记录生活</p>
+                <h1>🖥️ 嵌入式/Linux春招岗位</h1>
             </header>
             
-            <div class="posts">
-                <article class="post" style="transition-delay: 0.1s;">
-                    <h2>欢迎来到我的博客</h2>
-                    <div class="date">2026-03-10</div>
-                    <p>这是我的第一个 GitHub Pages 博客。我会在这里分享技术文章、项目记录和生活点滴。这是一个带有动态光晕效果的炫酷界面，光晕会跟随鼠标移动。</p>
-                    <a href="#">阅读全文 →</a>
-                </article>
+            <div class="section-title">📋 近期岗位</div>
+            
+            <div class="jobs-grid" id="jobsGrid">
+                <!-- 岗位数据 -->
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">嵌入式软件工程师</span>
+                        <span class="job-salary">15-30K</span>
+                    </div>
+                    <div class="job-company">华为技术有限公司</div>
+                    <div class="job-tags">
+                        <span class="job-tag">嵌入式</span>
+                        <span class="job-tag">Linux</span>
+                        <span class="job-tag">C/C++</span>
+                        <span class="job-tag">驱动开发</span>
+                    </div>
+                    <div class="job-location">📍 深圳/杭州/上海</div>
+                    <a class="job-link" href="https://career.huawei.com" target="_blank">查看详情 →</a>
+                </div>
                 
-                <article class="post" style="transition-delay: 0.2s;">
-                    <h2>关于我</h2>
-                    <div class="date">2026-03-10</div>
-                    <p>开发者，热爱开源技术，喜欢折腾各种开发板和有趣的项目。目前在玩 RDK X5 开发板，搭建了自己的主页和新闻聚合网站。</p>
-                    <a href="#">阅读全文 →</a>
-                </article>
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">Linux内核工程师</span>
+                        <span class="job-salary">20-40K</span>
+                    </div>
+                    <div class="job-company">阿里云</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Linux内核</span>
+                        <span class="job-tag">内核开发</span>
+                        <span class="job-tag">C</span>
+                    </div>
+                    <div class="job-location">📍 杭州/北京</div>
+                    <a class="job-link" href="https://talent.alibaba.com" target="_blank">查看详情 →</a>
+                </div>
                 
-                <article class="post" style="transition-delay: 0.3s;">
-                    <h2>我的项目</h2>
-                    <div class="date">2026-03-10</div>
-                    <p>• 新闻聚合网站 - 聚合 VRAR星球、36氪等科技资讯<br>
-                    • 日程管理网站 - 带有炫酷时钟和任务管理<br>
-                    • GitHub Pages 博客 - 你现在看到的这个网站</p>
-                    <a href="#">阅读全文 →</a>
-                </article>
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">BSP工程师</span>
+                        <span class="job-salary">12-25K</span>
+                    </div>
+                    <div class="job-company">大疆创新</div>
+                    <div class="job-tags">
+                        <span class="job-tag">BSP</span>
+                        <span class="job-tag">ARM</span>
+                        <span class="job-tag">RTOS</span>
+                        <span class="job-tag">无人机</span>
+                    </div>
+                    <div class="job-location">📍 深圳</div>
+                    <a class="job-link" href="https://career.dji.com" target="_blank">查看详情 →</a>
+                </div>
+                
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">系统开发工程师</span>
+                        <span class="job-salary">18-35K</span>
+                    </div>
+                    <div class="job-company">小米科技</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Linux</span>
+                        <span class="job-tag">系统开发</span>
+                        <span class="job-tag">IoT</span>
+                    </div>
+                    <div class="job-location">📍 北京/武汉</div>
+                    <a class="job-link" href="https://career.xiaomi.com" target="_blank">查看详情 →</a>
+                </div>
+                
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">嵌入式开发工程师</span>
+                        <span class="job-salary">10-20K</span>
+                    </div>
+                    <div class="job-company">蔚来汽车</div>
+                    <div class="job-tags">
+                        <span class="job-tag">嵌入式</span>
+                        <span class="job-tag">汽车电子</span>
+                        <span class="job-tag">AUTOSAR</span>
+                    </div>
+                    <div class="job-location">📍 上海/合肥</div>
+                    <a class="job-link" href="https://app.mi.com/" target="_blank">查看详情 →</a>
+                </div>
+                
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">Linux驱动工程师</span>
+                        <span class="job-salary">15-30K</span>
+                    </div>
+                    <div class="job-company">海康威视</div>
+                    <div class="job-tags">
+                        <span class="job-tag">Linux驱动</span>
+                        <span class="job-tag">ARM</span>
+                        <span class="job-tag">视频编解码</span>
+                    </div>
+                    <div class="job-location">📍 杭州</div>
+                    <a class="job-link" href="https://career.hikvision.com" target="_blank">查看详情 →</a>
+                </div>
+                
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">固件工程师</span>
+                        <span class="job-salary">12-24K</span>
+                    </div>
+                    <div class="job-company">紫光展锐</div>
+                    <div class="job-tags">
+                        <span class="job-tag">固件</span>
+                        <span class="job-tag">ARM</span>
+                        <span class="job-tag">基带</span>
+                    </div>
+                    <div class="job-location">📍 上海/北京</div>
+                    <a class="job-link" href="#" target="_blank">查看详情 →</a>
+                </div>
+                
+                <div class="job-card">
+                    <div class="job-header">
+                        <span class="job-title">RTOS开发工程师</span>
+                        <span class="job-salary">10-22K</span>
+                    </div>
+                    <div class="job-company">汇顶科技</div>
+                    <div class="job-tags">
+                        <span class="job-tag">RTOS</span>
+                        <span class="job-tag">FreeRTOS</span>
+                        <span class="job-tag">MCU</span>
+                    </div>
+                    <div class="job-location">📍 深圳/成都</div>
+                    <a class="job-link" href="#" target="_blank">查看详情 →</a>
+                </div>
+            </div>
+            
+            <div class="section-title">💡 找工作网站推荐</div>
+            <div class="jobs-grid">
+                <div class="job-card">
+                    <div class="job-title">Boss直聘</div>
+                    <div class="job-company">boss.zhipin.com</div>
+                    <div class="job-tags"><span class="job-tag">反馈快</span><span class="job-tag">可以直接聊</span></div>
+                    <a class="job-link" href="https://www.zhipin.com/web/geek/job?query=嵌入式&city=101010100" target="_blank">搜索岗位 →</a>
+                </div>
+                <div class="job-card">
+                    <div class="job-title">牛客网</div>
+                    <div class="job-company">nowcoder.com</div>
+                    <div class="job-tags"><span class="job-tag">互联网校招</span><span class="job-tag">面经</span></div>
+                    <a class="job-link" href="https://www.nowcoder.com/jobs" target="_blank">搜索岗位 →</a>
+                </div>
+                <div class="job-card">
+                    <div class="job-title">实习僧</div>
+                    <div class="job-company">shixiseng.com</div>
+                    <div class="job-tags"><span class="job-tag">实习</span><span class="job-tag">校招</span></div>
+                    <a class="job-link" href="https://www.shixiseng.com/intern/" target="_blank">搜索实习 →</a>
+                </div>
             </div>
             
             <footer>
-                <p>© 2026 John. Powered by <a href="https://pages.github.com">GitHub Pages</a></p>
+                <p>🎯 祝春招顺利！更多岗位持续更新中...</p>
             </footer>
         </div>
     </div>
     
     <script>
-        // 更新时间显示
         function updateTime() {
             var now = new Date();
             var hours = now.getHours();
             var minutes = now.getMinutes();
             var seconds = now.getSeconds();
-            
-            // 更新时钟
-            document.getElementById('clock').textContent = 
-                String(hours).padStart(2, '0') + ':' + 
-                String(minutes).padStart(2, '0') + ':' + 
-                String(seconds).padStart(2, '0');
-            
-            // 更新日期
+            document.getElementById('clock').textContent = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
             var year = now.getFullYear();
             var month = now.getMonth() + 1;
             var day = now.getDate();
             var weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            var weekday = weekdays[now.getDay()];
-            document.getElementById('date').textContent = year + '年' + month + '月' + day + '日 ' + weekday;
-            
-            // 计算今日进度
+            document.getElementById('date').textContent = year + '年' + month + '月' + day + '日 ' + weekdays[now.getDay()];
             var totalSeconds = hours * 3600 + minutes * 60 + seconds;
             var dayPercent = (totalSeconds / 86400) * 100;
-            
-            // 更新进度条
             document.getElementById('dayProgressBar').style.width = dayPercent + '%';
             document.getElementById('dayProgressPercent').textContent = Math.floor(dayPercent) + '%';
-            
-            // 计算剩余时间
             var remainingHours = 23 - hours;
             var remainingMinutes = 59 - minutes;
             var remainingSeconds = 60 - seconds;
-            document.getElementById('remainingTime').textContent = 
-                '还剩 ' + remainingHours + ' 小时 ' + remainingMinutes + ' 分钟 ' + remainingSeconds + ' 秒';
+            document.getElementById('remainingTime').textContent = '还剩 ' + remainingHours + ' 小时 ' + remainingMinutes + ' 分钟 ' + remainingSeconds + ' 秒';
         }
-        
-        // 每秒更新
         setInterval(updateTime, 1000);
         updateTime();
         
-        // 页面加载动画
         setTimeout(function() {
             document.getElementById('preloader').classList.add('fade-out');
             var bgDynamic = document.getElementById('bgDynamic');
@@ -404,21 +299,15 @@
             orbs[1].style.opacity = '0.35';
             orbs[2].style.opacity = '0.25';
             document.getElementById('mainContent').classList.add('visible');
-            document.querySelectorAll('.post').forEach(function(post, i) {
-                setTimeout(function() { post.classList.add('visible'); }, 200 + i * 150);
-            });
         }, 2500);
         
-        // 鼠标跟随光晕效果
         var mouseX = 50, mouseY = 50;
         var targetX = 50, targetY = 50;
         var bgDynamic = document.getElementById('bgDynamic');
-        
         document.addEventListener('mousemove', function(e) {
             mouseX = (e.clientX / window.innerWidth) * 100;
             mouseY = (e.clientY / window.innerHeight) * 100;
         });
-        
         function animate() {
             targetX += (mouseX - targetX) * 0.08;
             targetY += (mouseY - targetY) * 0.08;
@@ -426,9 +315,7 @@
             bgDynamic.style.setProperty('--mouse-y', targetY + '%');
             requestAnimationFrame(animate);
         }
-        
         setTimeout(function() { animate(); }, 3000);
-        
         setTimeout(function() {
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.transition = 'opacity 1.5s ease';

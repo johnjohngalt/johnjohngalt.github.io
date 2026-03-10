@@ -45,6 +45,7 @@
             transition: none; 
         }
         
+        /* 紫色主光晕 - 紧跟鼠标 */
         .bg-orb-1 { 
             width: 600px; 
             height: 600px; 
@@ -52,19 +53,23 @@
             left: calc(var(--mouse-x) - 300px); 
             top: calc(var(--mouse-y) - 300px); 
         }
-        .bg-orb            width: 500px; 
--2 { 
-            height: 500px; 
-            background: radial-gradient(circle, rgba(16,185,129,0.6) 0%, transparent 70%); 
-            left: calc(var(--mouse-x) * 1.5 - 250px); 
-            top: calc(var(--mouse-y) * 1.5 - 250px); 
+        
+        /* 绿色光晕 - 跟随鼠标 */
+        .bg-orb-2 { 
+            width: 450px; 
+            height: 450px; 
+            background: radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%); 
+            left: calc(var(--mouse-x) - 225px + 80px); 
+            top: calc(var(--mouse-y) - 225px + 60px); 
         }
+        
+        /* 粉色光晕 - 跟随鼠标 */
         .bg-orb-3 { 
-            width: 400px; 
-            height: 400px; 
-            background: radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%); 
-            left: calc(var(--mouse-x) * 0.8 - 200px); 
-            top: calc(var(--mouse-y) * 0.8 - 200px); 
+            width: 350px; 
+            height: 350px; 
+            background: radial-gradient(circle, rgba(168,85,247,0.6) 0%, transparent 70%); 
+            left: calc(var(--mouse-x) - 175px - 50px); 
+            top: calc(var(--mouse-y) - 175px + 40px); 
         }
         
         /* 加载动画 */
@@ -367,11 +372,11 @@
             var bgDynamic = document.getElementById('bgDynamic');
             bgDynamic.classList.add('active');
             
-            // 设置背景光晕初始透明度（不要比intro亮）
+            // 设置背景光晕初始透明度
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
-            orbs[0].style.opacity = '0.35';
-            orbs[1].style.opacity = '0.28';
-            orbs[2].style.opacity = '0.22';
+            orbs[0].style.opacity = '0.4';
+            orbs[1].style.opacity = '0.35';
+            orbs[2].style.opacity = '0.25';
             
             // 主内容淡入
             document.getElementById('mainContent').classList.add('visible');
@@ -390,7 +395,7 @@
             
         }, 2500);
         
-        // 鼠标跟随光晕效果 - 延迟启动
+        // 鼠标跟随光晕效果
         var mouseX = 50, mouseY = 50;
         var targetX = 50, targetY = 50;
         var bgDynamic = document.getElementById('bgDynamic');
@@ -410,7 +415,7 @@
             requestAnimationFrame(animate);
         }
         
-        // 延迟启动鼠标跟随，让过渡更平滑
+        // 延迟启动鼠标跟随
         setTimeout(function() {
             animate();
         }, 3000);
@@ -422,8 +427,8 @@
             orbs[1].style.transition = 'opacity 1.5s ease';
             orbs[2].style.transition = 'opacity 1.5s ease';
             
-            orbs[0].style.opacity = '0.5';
-            orbs[1].style.opacity = '0.4';
+            orbs[0].style.opacity = '0.55';
+            orbs[1].style.opacity = '0.45';
             orbs[2].style.opacity = '0.35';
         }, 3500);
     </script>

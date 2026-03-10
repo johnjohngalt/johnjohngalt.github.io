@@ -30,7 +30,7 @@
             overflow: hidden; 
             pointer-events: none; 
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 1.2s ease;
         }
         
         .bg-dynamic.active {
@@ -67,7 +67,7 @@
             top: calc(var(--mouse-y) * 0.8 - 200px); 
         }
         
-        /* 加载动画 - 优雅光晕 */
+        /* 加载动画 */
         .preloader {
             position: fixed;
             top: 0;
@@ -75,103 +75,145 @@
             width: 100%;
             height: 100%;
             background: #0a0a0f;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.8s ease;
         }
         
         .preloader.fade-out {
             opacity: 0;
-            transition: opacity 0.8s ease;
             pointer-events: none;
         }
         
-        /* 核心光晕 */
-        .glow-core {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 
-                0 0 20px rgba(99, 102, 241, 0.8),
-                0 0 40px rgba(99, 102, 241, 0.6),
-                0 0 60px rgba(99, 102, 241, 0.4),
-                0 0 80px rgba(168, 85, 247, 0.3);
-            animation: corePulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes corePulse {
-            0%, 100% { 
-                transform: scale(1);
-                box-shadow: 
-                    0 0 20px rgba(99, 102, 241, 0.8),
-                    0 0 40px rgba(99, 102, 241, 0.6),
-                    0 0 60px rgba(99, 102, 241, 0.4),
-                    0 0 80px rgba(168, 85, 247, 0.3);
-            }
-            50% { 
-                transform: scale(1.2);
-                box-shadow: 
-                    0 0 30px rgba(99, 102, 241, 1),
-                    0 0 60px rgba(99, 102, 241, 0.8),
-                    0 0 90px rgba(99, 102, 241, 0.5),
-                    0 0 120px rgba(168, 85, 247, 0.4);
-            }
-        }
-        
-        /* 扩散光晕 */
-        .glow-ring {
+        /* 加载时的三个光晕 - 从中心开始 */
+        .preloader-orb {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            animation: ringExpand 2.5s ease-out infinite;
+            filter: blur(80px);
+            opacity: 0;
+            transform: translate(-50%, -50%);
         }
         
-        .glow-ring:nth-child(2) {
-            width: 20px;
-            height: 20px;
-            animation-delay: 0s;
+        /* 初始状态：从屏幕中心 0 大小开始 */
+        .preloader-orb-1 {
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(99,102,241,0.9) 0%, transparent 70%);
+            left: 50%;
+            top: 50%;
+            animation: orb1Expand 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         
-        .glow-ring:nth-child(3) {
-            width: 20px;
-            height: 20px;
-            animation-delay: 0.8s;
+        .preloader-orb-2 {
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%);
+            left: 50%;
+            top: 50%;
+            animation: orb2Expand 2s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
         }
         
-        .glow-ring:nth-child(4) {
-            width: 20px;
-            height: 20px;
-            animation-delay: 1.6s;
+        .preloader-orb-3 {
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(168,85,247,0.6) 0%, transparent 70%);
+            left: 50%;
+            top: 50%;
+            animation: orb3Expand 2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
         }
         
-        @keyframes ringExpand {
+        @keyframes orb1Expand {
             0% {
-                width: 20px;
-                height: 20px;
+                width: 0;
+                height: 0;
+                left: 50%;
+                top: 50%;
+                opacity: 0;
+            }
+            30% {
                 opacity: 0.8;
-                border-color: rgba(99, 102, 241, 0.6);
+            }
+            100% {
+                width: 600px;
+                height: 600px;
+                left: calc(50% - 300px);
+                top: calc(50% - 300px);
+                opacity: 0.5;
+            }
+        }
+        
+        @keyframes orb2Expand {
+            0% {
+                width: 0;
+                height: 0;
+                left: 50%;
+                top: 50%;
+                opacity: 0;
+            }
+            30% {
+                opacity: 0.6;
+            }
+            100% {
+                width: 500px;
+                height: 500px;
+                left: calc(50% - 250px);
+                top: calc(50% - 250px);
+                opacity: 0.4;
+            }
+        }
+        
+        @keyframes orb3Expand {
+            0% {
+                width: 0;
+                height: 0;
+                left: 50%;
+                top: 50%;
+                opacity: 0;
+            }
+            30% {
+                opacity: 0.5;
             }
             100% {
                 width: 400px;
                 height: 400px;
-                opacity: 0;
-                border-color: rgba(168, 85, 247, 0.1);
+                left: calc(50% - 200px);
+                top: calc(50% - 200px);
+                opacity: 0.35;
             }
+        }
+        
+        /* 核心亮点 */
+        .preloader-core {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 20px rgba(255,255,255,0.8),
+                0 0 40px rgba(99, 102, 241, 0.6),
+                0 0 60px rgba(168, 85, 247, 0.4);
+            animation: coreFade 2.2s ease forwards;
+            z-index: 10;
+        }
+        
+        @keyframes coreFade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
         }
         
         /* 主内容 */
         .main-content {
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+            transition: opacity 0.6s ease;
         }
         
         .main-content.visible {
             opacity: 1;
-            transform: translateY(0);
         }
         
         .container { 
@@ -195,12 +237,27 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: titleIn 0.8s ease 1.8s forwards;
+        }
+        
+        @keyframes titleIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         header p { 
-            opacity: 0.85; 
+            opacity: 0; 
             font-size: 1.2rem; 
             color: #94a3b8;
+            animation: fadeIn 0.6s ease 2s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 0.85; }
         }
         
         .posts { 
@@ -269,7 +326,7 @@
             padding-top: 30px;
             border-top: 1px solid rgba(255,255,255,0.08);
             opacity: 0;
-            transition: opacity 0.5s ease 0.8s;
+            transition: opacity 0.5s ease;
         }
         
         footer.visible {
@@ -289,10 +346,10 @@
 <body>
     <!-- 加载动画 -->
     <div class="preloader" id="preloader">
-        <div class="glow-core"></div>
-        <div class="glow-ring"></div>
-        <div class="glow-ring"></div>
-        <div class="glow-ring"></div>
+        <div class="preloader-orb preloader-orb-1"></div>
+        <div class="preloader-orb preloader-orb-2"></div>
+        <div class="preloader-orb preloader-orb-3"></div>
+        <div class="preloader-core"></div>
     </div>
     
     <!-- 动态光晕背景 -->
@@ -342,35 +399,42 @@
     </div>
     
     <script>
-        // 加载完成后切换
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                // 1. 加载层淡出
-                document.getElementById('preloader').classList.add('fade-out');
-                
-                // 2. 背景光晕出现并接管
-                document.getElementById('bgDynamic').classList.add('active');
-                document.querySelectorAll('.bg-orb').forEach(function(orb) {
-                    orb.style.opacity = '0.6';
-                });
-                
-                // 3. 主内容淡入
-                document.getElementById('mainContent').classList.add('visible');
-                
-                // 4. 文章卡片依次出现
-                document.querySelectorAll('.post').forEach(function(post) {
+        // 动画完成后切换
+        setTimeout(function() {
+            // 1. 加载层淡出
+            document.getElementById('preloader').classList.add('fade-out');
+            
+            // 2. 背景光晕接管（此时位置和大小已一致，无缝衔接）
+            var bgDynamic = document.getElementById('bgDynamic');
+            bgDynamic.classList.add('active');
+            
+            // 设置背景光晕的初始状态与加载结束时一致
+            var orbs = bgDynamic.querySelectorAll('.bg-orb');
+            orbs[0].style.opacity = '0.5';
+            orbs[1].style.opacity = '0.4';
+            orbs[2].style.opacity = '0.35';
+            
+            // 3. 主内容淡入
+            document.getElementById('mainContent').classList.add('visible');
+            
+            // 4. 文章卡片依次出现
+            document.querySelectorAll('.post').forEach(function(post, i) {
+                setTimeout(function() {
                     post.classList.add('visible');
-                });
-                
-                // 5. 页脚出现
+                }, 200 + i * 150);
+            });
+            
+            // 5. 页脚出现
+            setTimeout(function() {
                 document.querySelector('footer').classList.add('visible');
-            }, 1800);
-        });
+            }, 800);
+            
+        }, 2400); // 2.4秒后切换
         
         // 鼠标跟随光晕效果
-        let mouseX = 50, mouseY = 50;
-        let targetX = 50, targetY = 50;
-        const bgDynamic = document.getElementById('bgDynamic');
+        var mouseX = 50, mouseY = 50;
+        var targetX = 50, targetY = 50;
+        var bgDynamic = document.getElementById('bgDynamic');
         
         document.addEventListener('mousemove', function(e) {
             mouseX = (e.clientX / window.innerWidth) * 100;
@@ -387,7 +451,10 @@
             requestAnimationFrame(animate);
         }
         
-        animate();
+        // 加载完成后启动鼠标跟随
+        setTimeout(function() {
+            animate();
+        }, 2500);
     </script>
 </body>
 </html>

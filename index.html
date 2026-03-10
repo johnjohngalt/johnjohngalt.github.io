@@ -85,7 +85,48 @@
             pointer-events: none;
         }
         
-        /* 加载时的三个光晕 - 从中心开始 */
+        /* 紫色核心 - 从小到大扩散 */
+        .preloader-core {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #a855f7 0%, #6366f1 50%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 20px rgba(168, 85, 247, 0.8),
+                0 0 40px rgba(99, 102, 241, 0.6),
+                0 0 80px rgba(99, 102, 241, 0.4);
+            animation: coreExpand 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes coreExpand {
+            0% {
+                width: 8px;
+                height: 8px;
+                opacity: 1;
+                box-shadow: 
+                    0 0 20px rgba(168, 85, 247, 0.9),
+                    0 0 40px rgba(99, 102, 241, 0.7),
+                    0 0 60px rgba(99, 102, 241, 0.5);
+            }
+            40% {
+                opacity: 0.9;
+            }
+            100% {
+                width: 800px;
+                height: 800px;
+                opacity: 0;
+                box-shadow: 
+                    0 0 100px rgba(168, 85, 247, 0.3),
+                    0 0 200px rgba(99, 102, 241, 0.2),
+                    0 0 300px rgba(99, 102, 241, 0.1);
+            }
+        }
+        
+        /* 同时生成的三个光晕 */
         .preloader-orb {
             position: absolute;
             border-radius: 50%;
@@ -94,14 +135,13 @@
             transform: translate(-50%, -50%);
         }
         
-        /* 初始状态：从屏幕中心 0 大小开始 */
         .preloader-orb-1 {
             width: 0;
             height: 0;
             background: radial-gradient(circle, rgba(99,102,241,0.9) 0%, transparent 70%);
             left: 50%;
             top: 50%;
-            animation: orb1Expand 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: orb1Grow 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
         }
         
         .preloader-orb-2 {
@@ -110,7 +150,7 @@
             background: radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%);
             left: 50%;
             top: 50%;
-            animation: orb2Expand 2s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+            animation: orb2Grow 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.45s forwards;
         }
         
         .preloader-orb-3 {
@@ -119,10 +159,10 @@
             background: radial-gradient(circle, rgba(168,85,247,0.6) 0%, transparent 70%);
             left: 50%;
             top: 50%;
-            animation: orb3Expand 2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+            animation: orb3Grow 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
         }
         
-        @keyframes orb1Expand {
+        @keyframes orb1Grow {
             0% {
                 width: 0;
                 height: 0;
@@ -131,7 +171,7 @@
                 opacity: 0;
             }
             30% {
-                opacity: 0.8;
+                opacity: 0.7;
             }
             100% {
                 width: 600px;
@@ -142,27 +182,7 @@
             }
         }
         
-        @keyframes orb2Expand {
-            0% {
-                width: 0;
-                height: 0;
-                left: 50%;
-                top: 50%;
-                opacity: 0;
-            }
-            30% {
-                opacity: 0.6;
-            }
-            100% {
-                width: 500px;
-                height: 500px;
-                left: calc(50% - 250px);
-                top: calc(50% - 250px);
-                opacity: 0.4;
-            }
-        }
-        
-        @keyframes orb3Expand {
+        @keyframes orb2Grow {
             0% {
                 width: 0;
                 height: 0;
@@ -174,36 +194,32 @@
                 opacity: 0.5;
             }
             100% {
+                width: 500px;
+                height: 500px;
+                left: calc(50% - 250px);
+                top: calc(50% - 250px);
+                opacity: 0.4;
+            }
+        }
+        
+        @keyframes orb3Grow {
+            0% {
+                width: 0;
+                height: 0;
+                left: 50%;
+                top: 50%;
+                opacity: 0;
+            }
+            30% {
+                opacity: 0.4;
+            }
+            100% {
                 width: 400px;
                 height: 400px;
                 left: calc(50% - 200px);
                 top: calc(50% - 200px);
                 opacity: 0.35;
             }
-        }
-        
-        /* 核心亮点 */
-        .preloader-core {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 
-                0 0 20px rgba(255,255,255,0.8),
-                0 0 40px rgba(99, 102, 241, 0.6),
-                0 0 60px rgba(168, 85, 247, 0.4);
-            animation: coreFade 2.2s ease forwards;
-            z-index: 10;
-        }
-        
-        @keyframes coreFade {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            70% { opacity: 1; }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
         }
         
         /* 主内容 */
@@ -239,7 +255,7 @@
             background-clip: text;
             opacity: 0;
             transform: translateY(20px);
-            animation: titleIn 0.8s ease 1.8s forwards;
+            animation: titleIn 0.8s ease 2s forwards;
         }
         
         @keyframes titleIn {
@@ -253,7 +269,7 @@
             opacity: 0; 
             font-size: 1.2rem; 
             color: #94a3b8;
-            animation: fadeIn 0.6s ease 2s forwards;
+            animation: fadeIn 0.6s ease 2.2s forwards;
         }
         
         @keyframes fadeIn {
@@ -346,10 +362,10 @@
 <body>
     <!-- 加载动画 -->
     <div class="preloader" id="preloader">
+        <div class="preloader-core"></div>
         <div class="preloader-orb preloader-orb-1"></div>
         <div class="preloader-orb preloader-orb-2"></div>
         <div class="preloader-orb preloader-orb-3"></div>
-        <div class="preloader-core"></div>
     </div>
     
     <!-- 动态光晕背景 -->
@@ -401,35 +417,29 @@
     <script>
         // 动画完成后切换
         setTimeout(function() {
-            // 1. 加载层淡出
             document.getElementById('preloader').classList.add('fade-out');
             
-            // 2. 背景光晕接管（此时位置和大小已一致，无缝衔接）
             var bgDynamic = document.getElementById('bgDynamic');
             bgDynamic.classList.add('active');
             
-            // 设置背景光晕的初始状态与加载结束时一致
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.opacity = '0.5';
             orbs[1].style.opacity = '0.4';
             orbs[2].style.opacity = '0.35';
             
-            // 3. 主内容淡入
             document.getElementById('mainContent').classList.add('visible');
             
-            // 4. 文章卡片依次出现
             document.querySelectorAll('.post').forEach(function(post, i) {
                 setTimeout(function() {
                     post.classList.add('visible');
                 }, 200 + i * 150);
             });
             
-            // 5. 页脚出现
             setTimeout(function() {
                 document.querySelector('footer').classList.add('visible');
             }, 800);
             
-        }, 2400); // 2.4秒后切换
+        }, 2600);
         
         // 鼠标跟随光晕效果
         var mouseX = 50, mouseY = 50;
@@ -451,10 +461,9 @@
             requestAnimationFrame(animate);
         }
         
-        // 加载完成后启动鼠标跟随
         setTimeout(function() {
             animate();
-        }, 2500);
+        }, 2700);
     </script>
 </body>
 </html>

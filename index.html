@@ -45,7 +45,7 @@
             transition: none; 
         }
         
-        /* 紫色主光晕 - 紧跟鼠标 */
+        /* 紫色光晕 - 紧跟鼠标 */
         .bg-orb-1 { 
             width: 600px; 
             height: 600px; 
@@ -54,22 +54,22 @@
             top: calc(var(--mouse-y) - 300px); 
         }
         
-        /* 绿色光晕 - 跟随鼠标 */
+        /* 绿色光晕 - 偏移跟随 */
         .bg-orb-2 { 
-            width: 450px; 
-            height: 450px; 
-            background: radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%); 
-            left: calc(var(--mouse-x) - 225px + 80px); 
-            top: calc(var(--mouse-y) - 225px + 60px); 
+            width: 500px; 
+            height: 500px; 
+            background: radial-gradient(circle, rgba(16,185,129,0.6) 0%, transparent 70%); 
+            left: calc(var(--mouse-x) * 1.5 - 250px); 
+            top: calc(var(--mouse-y) * 1.5 - 250px); 
         }
         
-        /* 粉色光晕 - 跟随鼠标 */
+        /* 粉色光晕 - 偏移跟随 */
         .bg-orb-3 { 
-            width: 350px; 
-            height: 350px; 
-            background: radial-gradient(circle, rgba(168,85,247,0.6) 0%, transparent 70%); 
-            left: calc(var(--mouse-x) - 175px - 50px); 
-            top: calc(var(--mouse-y) - 175px + 40px); 
+            width: 400px; 
+            height: 400px; 
+            background: radial-gradient(circle, rgba(168,85,247,0.5) 0%, transparent 70%); 
+            left: calc(var(--mouse-x) * 0.8 - 200px); 
+            top: calc(var(--mouse-y) * 0.8 - 200px); 
         }
         
         /* 加载动画 */
@@ -90,7 +90,7 @@
             pointer-events: none;
         }
         
-        /* 紫色小点 - 只负责出现和模糊，不扩大 */
+        /* 紫色小点 */
         .preloader-dot {
             position: absolute;
             left: 50%;
@@ -119,7 +119,7 @@
             }
         }
         
-        /* 光晕 - 从中心弥漫开来，填充点的位置 */
+        /* 光晕 */
         .preloader-halo {
             position: absolute;
             left: 50%;
@@ -363,39 +363,32 @@
     </div>
     
     <script>
-        // 动画完成后切换 - 延长等待让过渡更自然
         setTimeout(function() {
-            // 加载层淡出
             document.getElementById('preloader').classList.add('fade-out');
             
-            // 背景光晕显现
             var bgDynamic = document.getElementById('bgDynamic');
             bgDynamic.classList.add('active');
             
-            // 设置背景光晕初始透明度
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.opacity = '0.4';
             orbs[1].style.opacity = '0.35';
             orbs[2].style.opacity = '0.25';
             
-            // 主内容淡入
             document.getElementById('mainContent').classList.add('visible');
             
-            // 文章卡片依次出现
             document.querySelectorAll('.post').forEach(function(post, i) {
                 setTimeout(function() {
                     post.classList.add('visible');
                 }, 200 + i * 150);
             });
             
-            // 页脚出现
             setTimeout(function() {
                 document.querySelector('footer').classList.add('visible');
             }, 800);
             
         }, 2500);
         
-        // 鼠标跟随光晕效果
+        // 鼠标跟随光晕效果 - 与原网站一致
         var mouseX = 50, mouseY = 50;
         var targetX = 50, targetY = 50;
         var bgDynamic = document.getElementById('bgDynamic');
@@ -406,8 +399,8 @@
         });
         
         function animate() {
-            targetX += (mouseX - targetX) * 0.06;
-            targetY += (mouseY - targetY) * 0.06;
+            targetX += (mouseX - targetX) * 0.08;
+            targetY += (mouseY - targetY) * 0.08;
             
             bgDynamic.style.setProperty('--mouse-x', targetX + '%');
             bgDynamic.style.setProperty('--mouse-y', targetY + '%');
@@ -415,21 +408,19 @@
             requestAnimationFrame(animate);
         }
         
-        // 延迟启动鼠标跟随
         setTimeout(function() {
             animate();
         }, 3000);
         
-        // 背景光晕逐渐增强到正常亮度
         setTimeout(function() {
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.transition = 'opacity 1.5s ease';
             orbs[1].style.transition = 'opacity 1.5s ease';
             orbs[2].style.transition = 'opacity 1.5s ease';
             
-            orbs[0].style.opacity = '0.55';
-            orbs[1].style.opacity = '0.45';
-            orbs[2].style.opacity = '0.35';
+            orbs[0].style.opacity = '0.5';
+            orbs[1].style.opacity = '0.4';
+            orbs[2].style.opacity = '0.3';
         }, 3500);
     </script>
 </body>

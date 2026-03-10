@@ -33,9 +33,7 @@
             transition: opacity 2s ease;
         }
         
-        .bg-dynamic.active {
-            opacity: 1;
-        }
+        .bg-dynamic.active { opacity: 1; }
         
         .bg-orb { 
             position: absolute; 
@@ -45,7 +43,6 @@
             transition: none; 
         }
         
-        /* 紫色光晕 - 紧跟鼠标 */
         .bg-orb-1 { 
             width: 600px; 
             height: 600px; 
@@ -54,7 +51,6 @@
             top: calc(var(--mouse-y) - 300px); 
         }
         
-        /* 绿色光晕 - 偏移跟随 */
         .bg-orb-2 { 
             width: 500px; 
             height: 500px; 
@@ -63,7 +59,6 @@
             top: calc(var(--mouse-y) * 1.5 - 250px); 
         }
         
-        /* 粉色光晕 - 偏移跟随 */
         .bg-orb-3 { 
             width: 400px; 
             height: 400px; 
@@ -90,7 +85,6 @@
             pointer-events: none;
         }
         
-        /* 紫色小点 */
         .preloader-dot {
             position: absolute;
             left: 50%;
@@ -105,21 +99,11 @@
         }
         
         @keyframes dotFade {
-            0% {
-                opacity: 1;
-                filter: blur(0);
-            }
-            40% {
-                opacity: 0.8;
-                filter: blur(2px);
-            }
-            100% {
-                opacity: 0;
-                filter: blur(8px);
-            }
+            0% { opacity: 1; filter: blur(0); }
+            40% { opacity: 0.8; filter: blur(2px); }
+            100% { opacity: 0; filter: blur(8px); }
         }
         
-        /* 光晕 */
         .preloader-halo {
             position: absolute;
             left: 50%;
@@ -152,159 +136,147 @@
         }
         
         @keyframes haloBloom {
-            0% {
-                width: 20px;
-                height: 20px;
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.45;
-            }
-            60% {
-                opacity: 0.35;
-            }
-            100% {
-                width: 700px;
-                height: 700px;
-                opacity: 0;
-            }
+            0% { width: 20px; height: 20px; opacity: 0; }
+            20% { opacity: 0.45; }
+            60% { opacity: 0.35; }
+            100% { width: 700px; height: 700px; opacity: 0; }
         }
         
         /* 主内容 */
-        .main-content {
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
+        .main-content { opacity: 0; transition: opacity 1s ease; }
+        .main-content.visible { opacity: 1; }
         
-        .main-content.visible {
-            opacity: 1;
-        }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 1; }
         
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 60px 20px; 
-            position: relative;
-            z-index: 1;
-        }
-        
-        header {
+        /* 时间进度条 */
+        .time-card {
+            background: rgba(26, 26, 36, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 30px;
             text-align: center;
-            margin-bottom: 50px;
-            padding: 40px 0;
         }
         
-        header h1 { 
-            font-size: 3rem; 
-            margin-bottom: 15px; 
+        .time-display {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .clock {
+            font-family: 'JetBrains Mono', 'SF Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
             background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6ee7b7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: titleIn 0.8s ease 1.8s forwards;
         }
         
-        @keyframes titleIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        header p { 
-            opacity: 0; 
-            font-size: 1.2rem; 
+        .date-display {
+            font-size: 1rem;
             color: #94a3b8;
-            animation: fadeIn 0.6s ease 2s forwards;
+            margin-bottom: 20px;
         }
         
-        @keyframes fadeIn {
-            to { opacity: 0.85; }
+        .progress-container {
+            margin-top: 15px;
         }
         
-        .posts { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 24px; 
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
         }
+        
+        .progress-title {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .progress-percent {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #6366f1, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .progress-bar-bg {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #10b981, #6366f1);
+            background-size: 200% 100%;
+            border-radius: 100px;
+            transition: width 1s linear;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            animation: shimmer 3s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .remaining-time {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        
+        header { text-align: center; margin-bottom: 40px; padding: 20px 0; }
+        
+        header h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 10px; 
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #6ee7b7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        header p { font-size: 1.1rem; color: #94a3b8; }
+        
+        .posts { display: flex; flex-direction: column; gap: 20px; }
         
         .post {
             background: rgba(26, 26, 36, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 20px;
-            padding: 30px;
+            padding: 24px;
             transition: all 0.3s ease;
             opacity: 0;
             transform: translateY(30px);
         }
         
-        .post.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .post.visible { opacity: 1; transform: translateY(0); }
+        .post:hover { transform: translateY(-3px); border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
         
-        .post:hover { 
-            transform: translateY(-5px);
-            border-color: rgba(99, 102, 241, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
+        .post h2 { color: #fff; margin-bottom: 10px; font-size: 1.3rem; }
+        .post .date { color: #6366f1; font-size: 0.85rem; margin-bottom: 12px; font-weight: 500; }
+        .post p { color: #94a3b8; line-height: 1.7; }
         
-        .post h2 { 
-            color: #fff; 
-            margin-bottom: 12px; 
-            font-size: 1.5rem; 
-        }
+        .post a { display: inline-block; margin-top: 15px; color: #6366f1; text-decoration: none; font-weight: 500; }
+        .post a:hover { color: #818cf8; }
         
-        .post .date { 
-            color: #6366f1; 
-            font-size: 0.9rem; 
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .post p { 
-            color: #94a3b8; 
-            line-height: 1.8;
-        }
-        
-        .post a { 
-            display: inline-block;
-            margin-top: 20px;
-            color: #6366f1;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .post a:hover { 
-            color: #818cf8; 
-        }
-        
-        footer {
-            text-align: center;
-            color: #64748b;
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        footer.visible {
-            opacity: 1;
-        }
-        
-        footer a { 
-            color: #6366f1; 
-            text-decoration: none;
-        }
-        
-        footer a:hover {
-            color: #818cf8;
-        }
+        footer { text-align: center; color: #64748b; margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+        footer a { color: #6366f1; text-decoration: none; }
+        footer a:hover { color: #818cf8; }
     </style>
 </head>
 <body>
@@ -326,6 +298,24 @@
     <!-- 主内容 -->
     <div class="main-content" id="mainContent">
         <div class="container">
+            <!-- 时间进度条 -->
+            <div class="time-card">
+                <div class="time-display">
+                    <span class="clock" id="clock">00:00:00</span>
+                </div>
+                <div class="date-display" id="date">2026年3月11日 星期三</div>
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span class="progress-title">今日时光</span>
+                        <span class="progress-percent" id="dayProgressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="dayProgressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="remaining-time" id="remainingTime">还剩 24 小时 0 分钟</div>
+                </div>
+            </div>
+            
             <header>
                 <h1>John's Blog</h1>
                 <p>探索技术，记录生活</p>
@@ -363,32 +353,63 @@
     </div>
     
     <script>
+        // 更新时间显示
+        function updateTime() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            
+            // 更新时钟
+            document.getElementById('clock').textContent = 
+                String(hours).padStart(2, '0') + ':' + 
+                String(minutes).padStart(2, '0') + ':' + 
+                String(seconds).padStart(2, '0');
+            
+            // 更新日期
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            var day = now.getDate();
+            var weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            var weekday = weekdays[now.getDay()];
+            document.getElementById('date').textContent = year + '年' + month + '月' + day + '日 ' + weekday;
+            
+            // 计算今日进度
+            var totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            var dayPercent = (totalSeconds / 86400) * 100;
+            
+            // 更新进度条
+            document.getElementById('dayProgressBar').style.width = dayPercent + '%';
+            document.getElementById('dayProgressPercent').textContent = Math.floor(dayPercent) + '%';
+            
+            // 计算剩余时间
+            var remainingHours = 23 - hours;
+            var remainingMinutes = 59 - minutes;
+            var remainingSeconds = 60 - seconds;
+            document.getElementById('remainingTime').textContent = 
+                '还剩 ' + remainingHours + ' 小时 ' + remainingMinutes + ' 分钟 ' + remainingSeconds + ' 秒';
+        }
+        
+        // 每秒更新
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // 页面加载动画
         setTimeout(function() {
             document.getElementById('preloader').classList.add('fade-out');
-            
             var bgDynamic = document.getElementById('bgDynamic');
             bgDynamic.classList.add('active');
-            
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.opacity = '0.4';
             orbs[1].style.opacity = '0.35';
             orbs[2].style.opacity = '0.25';
-            
             document.getElementById('mainContent').classList.add('visible');
-            
             document.querySelectorAll('.post').forEach(function(post, i) {
-                setTimeout(function() {
-                    post.classList.add('visible');
-                }, 200 + i * 150);
+                setTimeout(function() { post.classList.add('visible'); }, 200 + i * 150);
             });
-            
-            setTimeout(function() {
-                document.querySelector('footer').classList.add('visible');
-            }, 800);
-            
         }, 2500);
         
-        // 鼠标跟随光晕效果 - 与原网站一致
+        // 鼠标跟随光晕效果
         var mouseX = 50, mouseY = 50;
         var targetX = 50, targetY = 50;
         var bgDynamic = document.getElementById('bgDynamic');
@@ -401,23 +422,18 @@
         function animate() {
             targetX += (mouseX - targetX) * 0.08;
             targetY += (mouseY - targetY) * 0.08;
-            
             bgDynamic.style.setProperty('--mouse-x', targetX + '%');
             bgDynamic.style.setProperty('--mouse-y', targetY + '%');
-            
             requestAnimationFrame(animate);
         }
         
-        setTimeout(function() {
-            animate();
-        }, 3000);
+        setTimeout(function() { animate(); }, 3000);
         
         setTimeout(function() {
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.transition = 'opacity 1.5s ease';
             orbs[1].style.transition = 'opacity 1.5s ease';
             orbs[2].style.transition = 'opacity 1.5s ease';
-            
             orbs[0].style.opacity = '0.5';
             orbs[1].style.opacity = '0.4';
             orbs[2].style.opacity = '0.3';

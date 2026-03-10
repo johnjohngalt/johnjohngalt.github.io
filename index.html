@@ -30,7 +30,7 @@
             overflow: hidden; 
             pointer-events: none; 
             opacity: 0;
-            transition: opacity 1.2s ease;
+            transition: opacity 1.5s ease;
         }
         
         .bg-dynamic.active {
@@ -77,7 +77,7 @@
             background: #0a0a0f;
             z-index: 9999;
             opacity: 1;
-            transition: opacity 0.8s ease;
+            transition: opacity 1s ease;
         }
         
         .preloader.fade-out {
@@ -85,96 +85,107 @@
             pointer-events: none;
         }
         
-        /* 紫色光晕核心 - 从小点渐变为弥漫光晕 */
+        /* 统一的流体动画 - 核心与光晕融合 */
         .preloader-glow {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(168,85,247,1) 0%, rgba(99,102,241,0.8) 30%, transparent 70%);
-            filter: blur(2px);
-            animation: glowBloom 2.2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(168,85,247,0.9) 20%, rgba(99,102,241,0.6) 50%, transparent 80%);
+            filter: blur(1px);
+            animation: fluidGlow 2.5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
         }
         
-        /* 外层光晕 - 跟随核心同步扩散 */
+        /* 溢出光晕层 */
         .preloader-halo {
             position: absolute;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(99,102,241,0.5) 0%, rgba(168,85,247,0.3) 40%, transparent 70%);
-            filter: blur(40px);
-            opacity: 0;
+            filter: blur(50px);
+            animation: fluidHalo 2.5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
         }
         
         .preloader-halo-1 {
-            animation: haloExpand 2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s forwards;
+            background: radial-gradient(circle, rgba(99,102,241,0.6) 0%, rgba(168,85,247,0.3) 40%, transparent 70%);
         }
         
         .preloader-halo-2 {
-            animation: haloExpand 2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.35s forwards;
-            background: radial-gradient(circle, rgba(16,185,129,0.4) 0%, rgba(16,185,129,0.2) 40%, transparent 70%);
+            background: radial-gradient(circle, rgba(16,185,129,0.5) 0%, rgba(16,185,129,0.2) 40%, transparent 70%);
+            animation-delay: 0.08s;
         }
         
         .preloader-halo-3 {
-            animation: haloExpand 2s cubic-bezier(0.25, 0.1, 0.25, 1) 0.5s forwards;
-            background: radial-gradient(circle, rgba(168,85,247,0.35) 0%, rgba(99,102,241,0.2) 40%, transparent 70%);
+            background: radial-gradient(circle, rgba(168,85,247,0.4) 0%, rgba(99,102,241,0.2) 40%, transparent 70%);
+            animation-delay: 0.15s;
         }
         
-        @keyframes glowBloom {
+        /* 核心从小到大，模糊度从低到高再消失 */
+        @keyframes fluidGlow {
             0% {
-                width: 8px;
-                height: 8px;
-                filter: blur(2px);
+                width: 6px;
+                height: 6px;
+                filter: blur(1px);
                 opacity: 1;
             }
-            30% {
-                width: 100px;
-                height: 100px;
-                filter: blur(15px);
-                opacity: 0.9;
+            15% {
+                width: 60px;
+                height: 60px;
+                filter: blur(8px);
+                opacity: 1;
             }
-            70% {
+            50% {
+                width: 300px;
+                height: 300px;
+                filter: blur(40px);
+                opacity: 0.7;
+            }
+            80% {
+                width: 600px;
+                height: 600px;
+                filter: blur(80px);
+                opacity: 0.3;
+            }
+            100% {
+                width: 900px;
+                height: 900px;
+                filter: blur(120px);
+                opacity: 0;
+            }
+        }
+        
+        /* 光晕同步扩散 */
+        @keyframes fluidHalo {
+            0% {
+                width: 10px;
+                height: 10px;
+                opacity: 0;
+            }
+            10% {
+                width: 50px;
+                height: 50px;
+                opacity: 0.8;
+            }
+            50% {
                 width: 400px;
                 height: 400px;
-                filter: blur(60px);
                 opacity: 0.5;
             }
             100% {
-                width: 800px;
-                height: 800px;
-                filter: blur(100px);
+                width: 900px;
+                height: 900px;
                 opacity: 0;
             }
         }
-        
-        @keyframes haloExpand {
-            0% {
-                width: 20px;
-                height: 20px;
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.6;
-            }
-            100% {
-                opacity: 0;
-            }
-        }
-        
-        /* 让三个光晕位置与最终背景一致 */
-        .preloader-halo-1 { width: 0; height: 0; }
-        .preloader-halo-2 { width: 0; height: 0; }
-        .preloader-halo-3 { width: 0; height: 0; }
         
         /* 主内容 */
         .main-content {
             opacity: 0;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.8s ease;
         }
         
         .main-content.visible {
@@ -204,7 +215,7 @@
             background-clip: text;
             opacity: 0;
             transform: translateY(20px);
-            animation: titleIn 0.8s ease 1.8s forwards;
+            animation: titleIn 0.8s ease 2s forwards;
         }
         
         @keyframes titleIn {
@@ -218,7 +229,7 @@
             opacity: 0; 
             font-size: 1.2rem; 
             color: #94a3b8;
-            animation: fadeIn 0.6s ease 2s forwards;
+            animation: fadeIn 0.6s ease 2.2s forwards;
         }
         
         @keyframes fadeIn {
@@ -388,7 +399,7 @@
                 document.querySelector('footer').classList.add('visible');
             }, 800);
             
-        }, 2400);
+        }, 2700);
         
         // 鼠标跟随光晕效果
         var mouseX = 50, mouseY = 50;
@@ -412,7 +423,7 @@
         
         setTimeout(function() {
             animate();
-        }, 2500);
+        }, 2800);
     </script>
 </body>
 </html>

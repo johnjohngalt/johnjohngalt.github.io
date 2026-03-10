@@ -4,6 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>John's Blog</title>
+    <script>
+        // 密码: john2026
+        const correctPassword = 'john2026';
+        
+        // 检查是否已验证
+        function checkAuth() {
+            return localStorage.getItem('blog_auth') === 'ok';
+        }
+        
+        function setAuth() {
+            localStorage.setItem('blog_auth', 'ok');
+        }
+        
+        // 如果未验证，显示密码输入
+        if (!checkAuth()) {
+            document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>🔒 私有博客</title>
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                            background: #0a0a0f;
+                            color: #fff;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 100vh;
+                        }
+                        .box {
+                            background: rgba(26,26,36,0.8);
+                            backdrop-filter: blur(20px);
+                            padding: 50px;
+                            border-radius: 24px;
+                            text-align: center;
+                            border: 1px solid rgba(255,255,255,0.1);
+                        }
+                        h2 { margin-bottom: 30px; color: #a5b4fc; }
+                        input {
+                            padding: 14px 20px;
+                            border-radius: 12px;
+                            border: 1px solid rgba(255,255,255,0.1);
+                            background: rgba(0,0,0,0.3);
+                            color: #fff;
+                            font-size: 16px;
+                            width: 200px;
+                            outline: none;
+                        }
+                        input:focus { border-color: #6366f1; }
+                        button {
+                            padding: 14px 30px;
+                            border-radius: 12px;
+                            border: none;
+                            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                            color: #fff;
+                            font-size: 16px;
+                            cursor: pointer;
+                            margin-left: 10px;
+                        }
+                        button:hover { transform: scale(1.05); }
+                        .error { color: #ef4444; margin-top: 15px; display: none; }
+                    </style>
+                </head>
+                <body>
+                    <div class="box">
+                        <h2>🔒 私有博客</h2>
+                        <div>
+                            <input type="password" id="pwd" placeholder="请输入访问密码" />
+                            <button onclick="check()">进入</button>
+                        </div>
+                        <p class="error" id="error">密码错误，请重试</p>
+                    </div>
+                    <script>
+                        function check() {
+                            if (document.getElementById('pwd').value === '${correctPassword}') {
+                                localStorage.setItem('blog_auth', 'ok');
+                                location.reload();
+                            } else {
+                                document.getElementById('error').style.display = 'block';
+                            }
+                        }
+                        document.getElementById('pwd').addEventListener('keyup', function(e) {
+                            if (e.key === 'Enter') check();
+                        });
+                    <\/script>
+                </body>
+                </html>
+            `);
+            throw new Error('Auth required');
+        }
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -33,9 +127,7 @@
             transition: opacity 2s ease;
         }
         
-        .bg-dynamic.active {
-            opacity: 1;
-        }
+        .bg-dynamic.active { opacity: 1; }
         
         .bg-orb { 
             position: absolute; 
@@ -45,7 +137,6 @@
             transition: none; 
         }
         
-        /* 紫色光晕 - 紧跟鼠标 */
         .bg-orb-1 { 
             width: 600px; 
             height: 600px; 
@@ -54,7 +145,6 @@
             top: calc(var(--mouse-y) - 300px); 
         }
         
-        /* 绿色光晕 - 偏移跟随 */
         .bg-orb-2 { 
             width: 500px; 
             height: 500px; 
@@ -63,7 +153,6 @@
             top: calc(var(--mouse-y) * 1.5 - 250px); 
         }
         
-        /* 粉色光晕 - 偏移跟随 */
         .bg-orb-3 { 
             width: 400px; 
             height: 400px; 
@@ -90,7 +179,6 @@
             pointer-events: none;
         }
         
-        /* 紫色小点 */
         .preloader-dot {
             position: absolute;
             left: 50%;
@@ -105,21 +193,11 @@
         }
         
         @keyframes dotFade {
-            0% {
-                opacity: 1;
-                filter: blur(0);
-            }
-            40% {
-                opacity: 0.8;
-                filter: blur(2px);
-            }
-            100% {
-                opacity: 0;
-                filter: blur(8px);
-            }
+            0% { opacity: 1; filter: blur(0); }
+            40% { opacity: 0.8; filter: blur(2px); }
+            100% { opacity: 0; filter: blur(8px); }
         }
         
-        /* 光晕 */
         .preloader-halo {
             position: absolute;
             left: 50%;
@@ -152,47 +230,18 @@
         }
         
         @keyframes haloBloom {
-            0% {
-                width: 20px;
-                height: 20px;
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.45;
-            }
-            60% {
-                opacity: 0.35;
-            }
-            100% {
-                width: 700px;
-                height: 700px;
-                opacity: 0;
-            }
+            0% { width: 20px; height: 20px; opacity: 0; }
+            20% { opacity: 0.45; }
+            60% { opacity: 0.35; }
+            100% { width: 700px; height: 700px; opacity: 0; }
         }
         
-        /* 主内容 */
-        .main-content {
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
+        .main-content { opacity: 0; transition: opacity 1s ease; }
+        .main-content.visible { opacity: 1; }
         
-        .main-content.visible {
-            opacity: 1;
-        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; position: relative; z-index: 1; }
         
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 60px 20px; 
-            position: relative;
-            z-index: 1;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 40px 0;
-        }
+        header { text-align: center; margin-bottom: 50px; padding: 40px 0; }
         
         header h1 { 
             font-size: 3rem; 
@@ -206,29 +255,12 @@
             animation: titleIn 0.8s ease 1.8s forwards;
         }
         
-        @keyframes titleIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes titleIn { to { opacity: 1; transform: translateY(0); } }
         
-        header p { 
-            opacity: 0; 
-            font-size: 1.2rem; 
-            color: #94a3b8;
-            animation: fadeIn 0.6s ease 2s forwards;
-        }
+        header p { opacity: 0; font-size: 1.2rem; color: #94a3b8; animation: fadeIn 0.6s ease 2s forwards; }
+        @keyframes fadeIn { to { opacity: 0.85; } }
         
-        @keyframes fadeIn {
-            to { opacity: 0.85; }
-        }
-        
-        .posts { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 24px; 
-        }
+        .posts { display: flex; flex-direction: column; gap: 24px; }
         
         .post {
             background: rgba(26, 26, 36, 0.6);
@@ -241,74 +273,23 @@
             transform: translateY(30px);
         }
         
-        .post.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .post.visible { opacity: 1; transform: translateY(0); }
+        .post:hover { transform: translateY(-5px); border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
         
-        .post:hover { 
-            transform: translateY(-5px);
-            border-color: rgba(99, 102, 241, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
+        .post h2 { color: #fff; margin-bottom: 12px; font-size: 1.5rem; }
+        .post .date { color: #6366f1; font-size: 0.9rem; margin-bottom: 15px; font-weight: 500; }
+        .post p { color: #94a3b8; line-height: 1.8; }
         
-        .post h2 { 
-            color: #fff; 
-            margin-bottom: 12px; 
-            font-size: 1.5rem; 
-        }
+        .post a { display: inline-block; margin-top: 20px; color: #6366f1; text-decoration: none; font-weight: 500; }
+        .post a:hover { color: #818cf8; }
         
-        .post .date { 
-            color: #6366f1; 
-            font-size: 0.9rem; 
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .post p { 
-            color: #94a3b8; 
-            line-height: 1.8;
-        }
-        
-        .post a { 
-            display: inline-block;
-            margin-top: 20px;
-            color: #6366f1;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .post a:hover { 
-            color: #818cf8; 
-        }
-        
-        footer {
-            text-align: center;
-            color: #64748b;
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        footer.visible {
-            opacity: 1;
-        }
-        
-        footer a { 
-            color: #6366f1; 
-            text-decoration: none;
-        }
-        
-        footer a:hover {
-            color: #818cf8;
-        }
+        footer { text-align: center; color: #64748b; margin-top: 60px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); opacity: 0; transition: opacity 0.5s ease; }
+        footer.visible { opacity: 1; }
+        footer a { color: #6366f1; text-decoration: none; }
+        footer a:hover { color: #818cf8; }
     </style>
 </head>
 <body>
-    <!-- 加载动画 -->
     <div class="preloader" id="preloader">
         <div class="preloader-dot"></div>
         <div class="preloader-halo preloader-halo-1"></div>
@@ -316,14 +297,12 @@
         <div class="preloader-halo preloader-halo-3"></div>
     </div>
     
-    <!-- 动态光晕背景 -->
     <div class="bg-dynamic" id="bgDynamic">
         <div class="bg-orb bg-orb-1"></div>
         <div class="bg-orb bg-orb-2"></div>
         <div class="bg-orb bg-orb-3"></div>
     </div>
     
-    <!-- 主内容 -->
     <div class="main-content" id="mainContent">
         <div class="container">
             <header>
@@ -365,30 +344,19 @@
     <script>
         setTimeout(function() {
             document.getElementById('preloader').classList.add('fade-out');
-            
             var bgDynamic = document.getElementById('bgDynamic');
             bgDynamic.classList.add('active');
-            
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.opacity = '0.4';
             orbs[1].style.opacity = '0.35';
             orbs[2].style.opacity = '0.25';
-            
             document.getElementById('mainContent').classList.add('visible');
-            
             document.querySelectorAll('.post').forEach(function(post, i) {
-                setTimeout(function() {
-                    post.classList.add('visible');
-                }, 200 + i * 150);
+                setTimeout(function() { post.classList.add('visible'); }, 200 + i * 150);
             });
-            
-            setTimeout(function() {
-                document.querySelector('footer').classList.add('visible');
-            }, 800);
-            
+            setTimeout(function() { document.querySelector('footer').classList.add('visible'); }, 800);
         }, 2500);
         
-        // 鼠标跟随光晕效果 - 与原网站一致
         var mouseX = 50, mouseY = 50;
         var targetX = 50, targetY = 50;
         var bgDynamic = document.getElementById('bgDynamic');
@@ -401,23 +369,18 @@
         function animate() {
             targetX += (mouseX - targetX) * 0.08;
             targetY += (mouseY - targetY) * 0.08;
-            
             bgDynamic.style.setProperty('--mouse-x', targetX + '%');
             bgDynamic.style.setProperty('--mouse-y', targetY + '%');
-            
             requestAnimationFrame(animate);
         }
         
-        setTimeout(function() {
-            animate();
-        }, 3000);
+        setTimeout(function() { animate(); }, 3000);
         
         setTimeout(function() {
             var orbs = bgDynamic.querySelectorAll('.bg-orb');
             orbs[0].style.transition = 'opacity 1.5s ease';
             orbs[1].style.transition = 'opacity 1.5s ease';
             orbs[2].style.transition = 'opacity 1.5s ease';
-            
             orbs[0].style.opacity = '0.5';
             orbs[1].style.opacity = '0.4';
             orbs[2].style.opacity = '0.3';
